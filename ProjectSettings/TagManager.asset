@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Undefined
   - cow
+  - powerup
   layers:
   - Default
   - TransparentFX

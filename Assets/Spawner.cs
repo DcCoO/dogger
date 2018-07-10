@@ -4,66 +4,48 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour {
 
-    public GameObject cow;
-    public GameObject powerup;
-    Vector3 initialPos;
-    float time = 4;
-    float slice = 0.1f;
-    float speed = 4;
-    float x;
 
+    public GameObject[] obstacles;
+    public Obstacle atual;
+    public Transform canvas;
     public bool stop = false;
-    bool canSpawn = false;
+    public Transform dog;
 
-    
-
-    private void Start() {
-        initialPos = transform.position;
-        x = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width + 50, 0, 10)).x;
+    void Start() {
+        dog = DogBehaviour.instance.transform;
+        canvas = GameObject.Find("Canvas").transform;
+        StartCoroutine(StartSpawn());
     }
 
     void Update () {
-        if (!stop) {
-            if (canSpawn) {
-                int qte = Random.Range(1, 5);
-                for (int i = 0; i < qte; i++) {
-                    GameObject g = Instantiate(cow, new Vector3(x, Position.Instance.y[4 - i]), Quaternion.identity);
-                    g.GetComponent<MoveCow>().Move(speed);
-                    if (i == 0) g.GetComponent<MoveCow>().Represent();
-                }
-                int power = Random.Range(1, 20);
-                if(power == 1) {
-                    GameObject g = Instantiate(powerup, new Vector3(x, Position.Instance.y[4 - qte]), Quaternion.identity);
-                    g.GetComponent<MoveCow>().Move(speed);
-                }
-                canSpawn = false;
-                time -= slice;
-                time = Mathf.Max(time, 0.7f);
-                if(time < 0.8f) {
-                    speed = Mathf.Min(7, speed + slice);
-                }
-                StartCoroutine(wait());
-            }
-        }
 	}
 
-    public void StartSpawn() {
-        time = 4;
-        speed = 4;
-        transform.position = initialPos;
-        transform.eulerAngles = Vector3.zero;
-        StopAllCoroutines();
-        stop = false;
-        canSpawn = true;
+    IEnumerator StartSpawn() {
+        while (!stop) {
+
+            GameObject g = Instantiate(obstacles[Random.Range(0, obstacles.Length)], canvas);
+            atual = g.GetComponent<Obstacle>();
+
+            yield return new WaitUntil(() => atual.over);
+            print("Destruir " + g.name);
+            Destroy(g);
+
+            float time = 1f;
+            float elapsedTime = 0;
+            while (elapsedTime < time) {
+                dog.transform.position = Vector2.Lerp(
+                    dog.transform.position,
+                    new Vector2(dog.transform.position.x, Position.Instance.y[0]),
+                    (elapsedTime / time)
+                );
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            //yield return new WaitForSeconds(1);
+            Time.timeScale += 0.1f;
+        }
     }
 
-    public void StopSpawn() {
-        stop = true;
-        canSpawn = false;
-    }
-
-    IEnumerator wait() {
-        yield return new WaitForSeconds(time);
-        canSpawn = true;        
-    }
+    
+    
 }

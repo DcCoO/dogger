@@ -16,8 +16,11 @@ public class DogBehaviour : MonoBehaviour {
     bool imortal = false;
     SpriteRenderer sr;
 
-    void Start () {
+    private void Awake() {
         instance = this;
+    }
+
+    void Start () {
         t = transform;
         sr = GetComponent<SpriteRenderer>();
         source = GetComponent<AudioSource>();
@@ -25,11 +28,12 @@ public class DogBehaviour : MonoBehaviour {
 
     bool subindo;
     public float speed;
-    public Image volume;
+    //public Image volume;
     float db, y, time;
 
     void Update () {
 
+        /*
         if (imortal) {
             sr.enabled = !sr.enabled;
         }
@@ -37,8 +41,10 @@ public class DogBehaviour : MonoBehaviour {
         db = Mathf.Min(1, MicInput.MicLoudness);
         subindo = db >= 0.075f;
 
-        volume.rectTransform.localScale = new Vector3(volume.rectTransform.localScale.x, db, volume.rectTransform.localScale.z);
-        volume.color = new Color(1 - db, db, 0);
+        //print(db * 100);
+
+        //volume.rectTransform.localScale = new Vector3(volume.rectTransform.localScale.x, db, volume.rectTransform.localScale.z);
+        //volume.color = new Color(1 - db, db, 0);
         
         y = t.position.y;
 
@@ -54,6 +60,7 @@ public class DogBehaviour : MonoBehaviour {
         time += Time.deltaTime;
 
         t.position = new Vector2(t.position.x, y);
+        */
         
 	}
 

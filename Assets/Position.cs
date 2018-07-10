@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Position {
-
+    //0 mais alto, 4 mais baixo
     public float[] y;
     public float dif;
 
@@ -29,5 +29,10 @@ public class Position {
         y[2] = y[1] - dif;
         y[3] = y[2] - dif;
         y[4] = y[3] - dif;
+        for(int i = 0; i < 3; i++) {
+            float aux = y[i];
+            y[i] = y[4 - i];
+            y[4 - i] = aux;
+        }
     }
 }
